@@ -1,0 +1,14 @@
+{
+	"contracts": {
+		"input": "contracts",
+		"output": "build",
+		"files": [
+			"Contract.sol"
+		]
+	},
+	"provider": {
+		"url": "https://example/",
+		"token": "abcdefgh12345",
+		"mnemonic": "word word word word word word word word word word word word"
+	}
+}
