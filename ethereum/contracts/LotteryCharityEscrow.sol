@@ -20,10 +20,16 @@ contract LotteryCharityEscrow {
         uint funds;
     }
     
+    address public factoryContract;
     address public overseer;
     uint private totalBalance;
     CharityCategory[] private charityCategories;
     CharitableFundingRequest[] private charitableFundingRequests;
+    
+    modifier fromFactory() {
+        require(msg.sender == factoryContract);
+        _;
+    }
     
     modifier restricted() {
         require(msg.sender == overseer);
@@ -32,9 +38,10 @@ contract LotteryCharityEscrow {
     
     constructor(address creator) public {
         overseer = creator;
+        factoryContract = msg.sender;
     }
     
-    function addCharityCategory(string name) public restricted {
+    function addCharityCategory(string name) public fromFactory {
         CharityCategory memory category = CharityCategory({
             name: name,
             funds: 0
@@ -75,7 +82,6 @@ contract LotteryCharityEscrow {
     
     function approveCharitableFundingRequest(uint index) public restricted {
         require(request.amount <= address(this).balance);
-        require(totalBalance == address(this).balance);
         
         CharitableFundingRequest storage request = charitableFundingRequests[index];
         require(!request.approved);
@@ -97,7 +103,6 @@ contract LotteryCharityEscrow {
     }
     
     function allocateCharitableFunds(uint index) public payable {
-        require(totalBalance == address(this).balance);
         totalBalance = totalBalance + msg.value;
         
         CharityCategory storage charityCategory = charityCategories[index];

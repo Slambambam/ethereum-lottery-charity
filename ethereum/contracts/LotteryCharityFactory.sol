@@ -26,7 +26,7 @@ contract LotteryCharityFactory {
         escrowInstance = LotteryCharityEscrow(deployedEscrowAddress);
     }
     
-    function addCharityCategory(string name) public restricted {
+    function addCharityCategory(string name) public restricted escrowExists {
         escrowInstance.addCharityCategory(name);
     }
     
@@ -41,10 +41,11 @@ contract LotteryCharityFactory {
     function createLottery(
         string name, string description, uint ticketPrice, uint minCharitablePercentage,
         uint blockHeightBuyingPeriod, uint blockHeightVerifyPeriod, uint blockHeightClaimPeriod)
-    public escrowExists {
+    public escrowExists returns (address) {
         address lottery = new LotteryCharity(msg.sender, deployedEscrowAddress, name, description, ticketPrice, minCharitablePercentage,
         blockHeightBuyingPeriod, blockHeightVerifyPeriod, blockHeightClaimPeriod);
         deployedLotteries.push(lottery);
+        return lottery;
     }
 }
 

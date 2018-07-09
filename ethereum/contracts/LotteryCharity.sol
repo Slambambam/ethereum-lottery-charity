@@ -24,8 +24,7 @@ contract LotteryCharity {
     uint private entriesTotal;
     uint private verifiedTotal;
     uint private forfeitureTotal;
-    uint private charitableTotal;
-    mapping(address => uint) _tickets;
+    mapping(address => uint) public _tickets;
     uint private winnerSeed;
     bool private hasWinner;
     address private winner;
@@ -47,6 +46,10 @@ contract LotteryCharity {
         blockHeightClaimPeriod = _blockHeightClaimPeriod;
         blockHeightStartTime = block.number;
         escrowInstance = LotteryCharityEscrow(charityEscrowAddress);
+    }
+    
+    function getCurrentBlockHeight() public view returns (uint) {
+        return block.number;
     }
 
     function getCharityCategory(uint index) public view returns (string) {
