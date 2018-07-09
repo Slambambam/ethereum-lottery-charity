@@ -19,6 +19,11 @@ contract LotteryCharityFactory {
         require(deployedEscrowAddress != address(0));
         _;
     }
+
+    modifier charityCategoriesExist() {
+        require(escrowInstance.getCharityCategoriesLength() > 0);
+        _;
+    }
     
     constructor() public {
         overseer = msg.sender;
@@ -41,7 +46,7 @@ contract LotteryCharityFactory {
     function createLottery(
         string name, string description, uint ticketPrice, uint minCharitablePercentage,
         uint blockHeightBuyingPeriod, uint blockHeightVerifyPeriod, uint blockHeightClaimPeriod)
-    public escrowExists returns (address) {
+    public escrowExists charityCategoriesExist returns (address) {
         address lottery = new LotteryCharity(msg.sender, deployedEscrowAddress, name, description, ticketPrice, minCharitablePercentage,
         blockHeightBuyingPeriod, blockHeightVerifyPeriod, blockHeightClaimPeriod);
         deployedLotteries.push(lottery);
