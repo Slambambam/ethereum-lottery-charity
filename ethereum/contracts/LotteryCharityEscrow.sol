@@ -46,11 +46,17 @@ contract LotteryCharityEscrow {
         return charityCategories.length;
     }
     
-    function getCharityCategories(uint index) public view returns (string, uint) {
-        return (charityCategories[index].name, charityCategories[index].funds);
+    function getCharityCategoryName(uint index) public view returns (string) {
+        return charityCategories[index].name;
+    }
+
+    function getCharityCategoryFunds(uint index) public view returns (uint) {
+        return charityCategories[index].funds;
     }
     
-    function createCharitableFundingRequest(uint amount, string organizationName, string fundingReason, string registrationId, string contactName, string email, string phoneNumber, uint charityCategoryIndex) public {
+    function createCharitableFundingRequest(
+        uint amount, string organizationName, string fundingReason, string registrationId,
+        string contactName, string email, string phoneNumber, uint charityCategoryIndex) public {
         CharitableFundingRequest memory request = CharitableFundingRequest({
             amount: amount,
             organization: organizationName,

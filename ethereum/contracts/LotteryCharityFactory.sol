@@ -5,8 +5,9 @@ import "./LotteryCharityEscrow.sol";
 
 contract LotteryCharityFactory {
     address public overseer;
-    address private deployedEscrow;
+    address private deployedEscrowAddress;
     address[] private deployedLotteries;
+    LotteryCharityEscrow escrowInstance;
     
     
     modifier restricted() {
@@ -15,30 +16,34 @@ contract LotteryCharityFactory {
     }
     
     modifier escrowExists() {
-        require(deployedEscrow != 0);
+        require(deployedEscrowAddress != address(0));
         _;
     }
     
     constructor(address creator) public {
         overseer = creator;
-        deployedEscrow = new LotteryCharityEscrow(creator);
+        deployedEscrowAddress = new LotteryCharityEscrow(creator);
+        escrowInstance = LotteryCharityEscrow(deployedEscrowAddress);
     }
     
     function addCharityCategory(string name) public restricted {
-        LotteryCharityEscrow escrow = LotteryCharityEscrow(deployedEscrow);
-        escrow.addCharityCategory(name);
+        escrowInstance.addCharityCategory(name);
     }
     
     function getDeployedLotteries() public view returns(address[]) {
         return deployedLotteries;
     }
     
-    function getDeployedEscrow() public view returns(address) {
-        return deployedEscrow;
+    function getDeployedEscrowAddress() public view returns(address) {
+        return deployedEscrowAddress;
     }
     
-    function createLottery(string name, string description, uint ticketPrice, uint minCharitablePercentage, uint blockHeightTimeLimit) public escrowExists {
-        address lottery = new LotteryCharity(msg.sender, name, description, ticketPrice, minCharitablePercentage, blockHeightTimeLimit);
+    function createLottery(
+        string name, string description, uint ticketPrice, uint minCharitablePercentage,
+        uint blockHeightBuyingPeriod, uint blockHeightVerifyPeriod, uint blockHeightClaimPeriod)
+    public escrowExists {
+        address lottery = new LotteryCharity(msg.sender, deployedEscrowAddress, name, description, ticketPrice, minCharitablePercentage,
+        blockHeightBuyingPeriod, blockHeightVerifyPeriod, blockHeightClaimPeriod);
         deployedLotteries.push(lottery);
     }
 }
