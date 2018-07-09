@@ -24,7 +24,7 @@ const deploy = async () => {
   // Use one of those accounts to deploy the contract
   const result = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
     .deploy({ data: compiledFactory.bytecode })
-    .send({ from: accounts[0], gas: '1000000' });
+    .send({ from: accounts[0], gas: '3000000' });
 
   // Add deploymentAddress to contract JSON file
   var data = compiledFactory;

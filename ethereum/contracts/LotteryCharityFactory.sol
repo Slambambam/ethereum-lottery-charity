@@ -20,9 +20,9 @@ contract LotteryCharityFactory {
         _;
     }
     
-    constructor(address creator) public {
-        overseer = creator;
-        deployedEscrowAddress = new LotteryCharityEscrow(creator);
+    constructor() public {
+        overseer = msg.sender;
+        deployedEscrowAddress = new LotteryCharityEscrow(overseer);
         escrowInstance = LotteryCharityEscrow(deployedEscrowAddress);
     }
     
